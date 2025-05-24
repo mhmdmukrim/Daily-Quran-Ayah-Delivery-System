@@ -285,62 +285,63 @@ def send_email(body, attachments=[]):
     except Exception as e:
         print(f"Error sending email: {e}")
 
+# Main script
 if __name__ == "__main__":
     print("Starting Daily Quran Reader...")
-
+    
     state = load_state()
     surah = state["surah"]
     ayah = state["ayah"]
-
+    
     print(f"Current position: Surah {surah}, Ayah {ayah}")
-
+    
     translator = Translator()
     verses, total_ayahs = get_ayahs_from_surah(surah, ayah, VERSE_CHUNK)
 
     if not verses:
         print("❌ Failed to fetch verses.")
         exit(1)
-
-    print(f"✅ Fetched {len(verses)} verses from Surah {verses[0]['surahName']}")
-
-    body = f"📖 Daily Quran Verses from Surah {verses[0]['surahName']} (Surah {verses[0]['surahNumber']})\n\n"
-    for v in verses:
-        translit = transliterate_arabic(v["arabic"])
-        sinhala = translate_to_sinhala(v["translation"], translator)
-        body += (
-            f"🌟 Ayah {v['numberInSurah']}\n"
-            f"Arabic: {v['arabic']}\n"
-            f"Arablish: {translit}\n"
-            f"English: {v['translation']}\n"
-            f"Sinhala: {sinhala}\n\n"
-        )
-
-    # Generate PDF
-    print("Generating PDF...")
-    pdf_success = generate_pdf(verses, PDF_FILE)
-
-    # Prepare attachments
-    attachments = []
-    if pdf_success and os.path.exists(PDF_FILE):
-        attachments.append(PDF_FILE)
     else:
-        # Try fallback text file
+        print(f"✅ Fetched {len(verses)} verses from Surah {verses[0]['surahName']}")
+        
+        body = f"📖 Daily Quran Verses from Surah {verses[0]['surahName']} (Surah {verses[0]['surahNumber']})\n\n"
+        for v in verses:
+            translit = transliterate_arabic(v["arabic"])
+            sinhala = translate_to_sinhala(v["translation"], translator)
+            body += (
+                f"🌟 Ayah {v['numberInSurah']}\n"
+                f"Arabic: {v['arabic']}\n"
+                f"Arablish: {translit}\n"
+                f"English: {v['translation']}\n"
+                f"Sinhala: {sinhala}\n\n"
+            )
+
+        # Generate PDF
+        print("Generating PDF...")
+        pdf_success = generate_pdf(verses, PDF_FILE)
+
+        # Prepare attachments
+        attachments = []
+        if pdf_success and os.path.exists(PDF_FILE):
+            attachments.append(PDF_FILE)
+        
+        # Check for text file if PDF failed
         txt_file = PDF_FILE.replace('.pdf', '.txt')
-        if os.path.exists(txt_file):
+        if not pdf_success and os.path.exists(txt_file):
             attachments.append(txt_file)
 
-    # Send Email
-    print("Sending email...")
-    send_email(body, attachments=attachments)
+        # Send Email
+        print("Sending email...")
+        send_email(body, attachments=attachments)
 
-    # Update reading state
-    last_ayah = verses[-1]["numberInSurah"]
-    if last_ayah >= total_ayahs:
-        new_state = {"surah": surah + 1, "ayah": 1}
-        print(f"Completed Surah {surah}. Moving to Surah {surah + 1}")
-    else:
-        new_state = {"surah": surah, "ayah": last_ayah + 1}
-        print(f"Next reading: Surah {surah}, Ayah {last_ayah + 1}")
-
-    save_state(new_state)
-    print("✅ Daily Quran reading completed successfully!")
+        # Update reading state
+        last_ayah = verses[-1]["numberInSurah"]
+        if last_ayah >= total_ayahs:
+            new_state = {"surah": surah + 1, "ayah": 1}
+            print(f"Completed Surah {surah}. Moving to Surah {surah + 1}")
+        else:
+            new_state = {"surah": surah, "ayah": last_ayah + 1}
+            print(f"Next reading: Surah {surah}, Ayah {last_ayah + 1}")
+        
+        save_state(new_state)
+        print("✅ Daily Quran reading completed successfully!")  
