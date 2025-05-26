@@ -5,3 +5,5 @@ googletrans==4.0.0rc1
 fpdf2
 pytz
 python-telegram-bot
+translate
+fpdf
