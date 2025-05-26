@@ -2,14 +2,15 @@ name: Run main.py and update JSON
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # daily at 12:00 UTC
-  workflow_dispatch:      # allow manual trigger
+    - cron: '0 12 * * *'  # Runs daily at 12:00 UTC
+  workflow_dispatch:      # Allows manual triggering from GitHub UI
 
 jobs:
-  update-json:
+  run-script:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
         with:
           persist-credentials: true
@@ -19,13 +20,16 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Run main.py
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Python script
         run: python main.py
 
-      - name: Commit and push JSON changes
+      - name: Commit and push updated JSON files
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
           git add '*.json'
-          git commit -m "Auto-update JSON from main.py" || echo "No changes to commit"
+          git commit -m "Auto-update JSON via GitHub Actions" || echo "No changes to commit"
           git push
