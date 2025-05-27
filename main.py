@@ -29,7 +29,7 @@ import sys
 class Config:
     EMAIL = "mukrimmhmd@gmail.com"
     PASSWORD = "iguk mpfl rjot boxw"  # Consider using environment variables
-    TO_EMAILS = ["mukrimmhmd@gmail.com","shafeekafathima1@gmail.com","mhmdmukarram100@gmail.com"]
+    TO_EMAILS = ["mukrimmhmd@gmail.com","shafeekafathima1@gmail.com","mhmdmukarram200@gmail.com"]
     
     STATE_FILE = "quran_reading_state.json"
     VERSE_CHUNK = 20
