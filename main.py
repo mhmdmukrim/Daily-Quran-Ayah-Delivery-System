@@ -32,7 +32,7 @@ class Config:
     TO_EMAILS = ["mukrimmhmd@gmail.com","shafeekafathima1@gmail.com","mhmdmukarram200@gmail.com"]
     
     STATE_FILE = "quran_reading_state.json"
-    VERSE_CHUNK = 20
+    VERSE_CHUNK = 10
     PDF_FILE = "daily_ayahs.pdf"
     LOG_FILE = "quran_reader.log"
     
