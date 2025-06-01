@@ -6,4 +6,3 @@ fpdf2
 pytz
 python-telegram-bot
 translate
-fpdf
